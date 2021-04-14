@@ -38,6 +38,7 @@ class ImageClassificationActor(DynamicActor):
 		self.input_details = None
 		self.output_details = None
 		self.last_run = time.time()
+		self.labels = None
         
 	def create_model(self,file_model):
 		self.interpreter = tf.lite.Interpreter(model_path=file_model)
@@ -49,14 +50,14 @@ class ImageClassificationActor(DynamicActor):
 	
 	def classify_Image(self,file_name,top_k=1):
 		input_shape = self.input_details[0]['shape']
-		input_data = np.array([np.array(Image.open(file_name))], dtype=np.float32)
-		#input_data = np.expand_dims(Image.open(file_name), axis=0)
+		input_data = np.expand_dims(cv2.resize( cv2.imread(file_name) , (64,64),cv2.INTER_AREA) , axis=0).astype(np.float32)
 		self.interpreter.set_tensor(self.input_details[0]['index'], input_data)
 		print(self.interpreter.get_input_details())
 
 		self.interpreter.invoke()
 		output_data = self.interpreter.get_tensor(self.output_details[0]['index'])
 		results = np.squeeze(output_data)
+
 		print(results)
 		ordered = np.argpartition(-results, top_k)
 		return [(i, results[i]) for i in ordered[:top_k]]
@@ -78,7 +79,9 @@ class ImageClassificationActor(DynamicActor):
 			self.model = self.create_model(msg.model)
 			self.mode = self.MODE_CONFIGURED
 			self.sample_freq = msg.sampling_freq
-			
+			with open(msg.model_classes) as f:
+				lines = [line.rstrip('\n') for line in f]
+			self.labels = lines
 			try:
 				if self.cam != None:
 					self.cam.release()
@@ -123,26 +126,24 @@ class ImageClassificationActor(DynamicActor):
 		
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			return
-		
-		frame = cv2.resize(frame, (224,224) )
-		
+
+		frame = cv2.resize(frame,(64,64))
 		cv2.imshow("test", frame)
 		img_name = "opencv_frame_{}.png".format(self.frame_counter)
 		cv2.imwrite(img_name, frame)
 		logger.info("{} written!".format(img_name))
-		
+
 		start_time = time.time()
 		results = self.classify_Image(img_name)
 		elapsed_ms = (time.time() - start_time) * 1000
 		label_id, prob = results[0]
-		labels = ['A3','A4','A5']#
-		print("%s - %.2f  - %.2f" % (labels[label_id], (prob/255)*100, elapsed_ms)	)
-		
+		print("%s - %.2f  - %.2f" % (self.labels[label_id], (prob/255)*100, elapsed_ms)	)
+
 		msg = pyimc.ImageClassification()
 		new_Classification = pyimc.ScoredClassification()
 		#prob
 		new_Classification.score = int( prob / 255 )
-		new_Classification.classification = labels[label_id]
+		new_Classification.classification = self.labels[label_id]
 		msg.classifications.append(new_Classification)
 		msg.frameid = self.frame_counter
 		#msg.data = frame.tobytes()
@@ -153,6 +154,8 @@ class ImageClassificationActor(DynamicActor):
 if __name__ == '__main__':
 	# Setup logging level and console output
 	logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+	pil_logger = logging.getLogger('PIL')
+	pil_logger.setLevel(logging.INFO)
 
 	# Create an actor, targeting the lauv-simulator-1 system
 	actor = ImageClassificationActor('lauv-simulator-1',1234)
