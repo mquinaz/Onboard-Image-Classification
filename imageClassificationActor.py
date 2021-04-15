@@ -52,16 +52,13 @@ class ImageClassificationActor(DynamicActor):
 		input_shape = self.input_details[0]['shape']
 		input_data = np.expand_dims(cv2.resize( cv2.imread(file_name) , (64,64),cv2.INTER_AREA) , axis=0).astype(np.float32)
 		self.interpreter.set_tensor(self.input_details[0]['index'], input_data)
-		print(self.interpreter.get_input_details())
 
 		self.interpreter.invoke()
 		output_data = self.interpreter.get_tensor(self.output_details[0]['index'])
 		results = np.squeeze(output_data)
 
-		print(results)
 		ordered = np.argpartition(-results, top_k)
-		return [(i, results[i]) for i in ordered[:top_k]]
-
+		return [(i, results[i]) for i in ordered]
 		
 	def from_target(self, msg):
 		try:
@@ -136,19 +133,25 @@ class ImageClassificationActor(DynamicActor):
 		start_time = time.time()
 		results = self.classify_Image(img_name)
 		elapsed_ms = (time.time() - start_time) * 1000
-		label_id, prob = results[0]
-		print("%s - %.2f  - %.2f" % (self.labels[label_id], (prob/255)*100, elapsed_ms)	)
-
+		print("Elapsed time: %.2f" % (elapsed_ms))
 		msg = pyimc.ImageClassification()
-		new_Classification = pyimc.ScoredClassification()
-		#prob
-		new_Classification.score = int( prob / 255 )
-		new_Classification.classification = self.labels[label_id]
-		msg.classifications.append(new_Classification)
+		print(results)
+		for tempTuple in results:
+			label_id, prob = tempTuple
+			print("%s - %.2f" % (self.labels[label_id], (prob/255)*100) )
+
+			new_Classification = pyimc.ScoredClassification()
+			prob = abs(prob)
+			new_Classification.score = int( prob/ 255 )
+			new_Classification.classification = self.labels[label_id]
+			msg.classifications.append(new_Classification)
+
 		msg.frameid = self.frame_counter
 		#msg.data = frame.tobytes()
 		msg.data = cv2.imencode('.png',frame)[1].tobytes()
-		self.send(self.target_name,msg) 
+
+		node = self.resolve_node_id(self.target_name)
+		self.send(node,msg)
 		self.frame_counter += 1
 		
 if __name__ == '__main__':
