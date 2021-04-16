@@ -50,12 +50,14 @@ class ImageClassificationActor(DynamicActor):
 	
 	def classify_Image(self,file_name,top_k=1):
 		input_shape = self.input_details[0]['shape']
-		input_data = np.expand_dims(cv2.resize( cv2.imread(file_name) , (64,64),cv2.INTER_AREA) , axis=0).astype(np.float32)
+		input_data = np.expand_dims(cv2.resize( cv2	.imread(file_name) , (64,64) ) , axis=0).astype(np.float32)
+		input_data = (np.float32(input_data) - 127.5) / 127.5
 		self.interpreter.set_tensor(self.input_details[0]['index'], input_data)
 
 		self.interpreter.invoke()
 		output_data = self.interpreter.get_tensor(self.output_details[0]['index'])
 		results = np.squeeze(output_data)
+		results = tf.nn.softmax(results).numpy()
 
 		ordered = np.argpartition(-results, top_k)
 		return [(i, results[i]) for i in ordered]
@@ -72,13 +74,14 @@ class ImageClassificationActor(DynamicActor):
 	def on_Classification_Control(self, msg: pyimc.ImageClassificationControl):
 		logger.info('Received')
 		if msg.command == pyimc.ImageClassificationControl.CommandEnum.SETUP:
-			#self.vc.setup(msg.video_source)
 			self.model = self.create_model(msg.model)
 			self.mode = self.MODE_CONFIGURED
 			self.sample_freq = msg.sampling_freq
-			with open(msg.model_classes) as f:
+			file_name = msg.model.split('.')[0] + ".txt"
+			with open(file_name) as f:
 				lines = [line.rstrip('\n') for line in f]
 			self.labels = lines
+			print(self.labels)
 			try:
 				if self.cam != None:
 					self.cam.release()
@@ -136,13 +139,14 @@ class ImageClassificationActor(DynamicActor):
 		print("Elapsed time: %.2f" % (elapsed_ms))
 		msg = pyimc.ImageClassification()
 		print(results)
+
 		for tempTuple in results:
 			label_id, prob = tempTuple
-			print("%s - %.2f" % (self.labels[label_id], (prob/255)*100) )
+			print("%s - %.2f" % (self.labels[label_id], prob ) )
 
 			new_Classification = pyimc.ScoredClassification()
 			prob = abs(prob)
-			new_Classification.score = int( prob/ 255 )
+			new_Classification.score = prob
 			new_Classification.classification = self.labels[label_id]
 			msg.classifications.append(new_Classification)
 
@@ -151,6 +155,7 @@ class ImageClassificationActor(DynamicActor):
 		msg.data = cv2.imencode('.png',frame)[1].tobytes()
 
 		node = self.resolve_node_id(self.target_name)
+
 		self.send(node,msg)
 		self.frame_counter += 1
 		
