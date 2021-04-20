@@ -1,3 +1,3 @@
 # Onboard-Image-Classification
 
-Assumes a txt file with class per line with same name of tflite model
+Assumes a dict.txt file with class per line 
