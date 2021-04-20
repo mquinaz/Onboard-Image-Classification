@@ -20,7 +20,8 @@ class ImageClassificationActor(DynamicActor):
 	MODE_NOT_CONFIGURED = 0
 	MODE_CONFIGURED = 1
 	MODE_ACTIVE = 2
-	
+	PATH_DIR = "model/"
+
 	def __init__(self, target_name,imc_id):
 		super().__init__(imc_id)
 		self.target_name = target_name
@@ -41,7 +42,7 @@ class ImageClassificationActor(DynamicActor):
 		self.labels = None
         
 	def create_model(self,file_model):
-		self.interpreter = tf.lite.Interpreter(model_path=file_model)
+		self.interpreter = tf.lite.Interpreter(model_path= (self.PATH_DIR + file_model) )
 		self.interpreter.allocate_tensors()
 
 		self.input_details = self.interpreter.get_input_details()
@@ -77,8 +78,7 @@ class ImageClassificationActor(DynamicActor):
 			self.model = self.create_model(msg.model)
 			self.mode = self.MODE_CONFIGURED
 			self.sample_freq = msg.sampling_freq
-			file_name = msg.model.split('.')[0] + ".txt"
-			with open(file_name) as f:
+			with open((self.PATH_DIR +"dict.txt")) as f:
 				lines = [line.rstrip('\n') for line in f]
 			self.labels = lines
 			print(self.labels)
