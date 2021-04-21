@@ -7,6 +7,10 @@ from pyimc.actors.dynamic import DynamicActor
 from pyimc.decorators import Subscribe, RunOnce, Periodic
 import cv2
 import time
+import keras
+from tensorflow.keras.models import load_model
+import tensorflow as tf
+import os
 
 logger = logging.getLogger('examples.ImageClassification')
 
@@ -52,7 +56,7 @@ class ImageClassificationActor(DynamicActor):
 			self.model_type = 0
 			return self.interpreter
 		if(file_model.split('.')[1] == 'h5'):
-			self.model = load_model(file_model)
+			self.model = keras.models.load_model(self.PATH_DIR + file_model)
 			self.model_type = 1
 			return self.model
 	
@@ -72,12 +76,12 @@ class ImageClassificationActor(DynamicActor):
 			return [(i, results[i]) for i in ordered]
 
 		if (self.model_type == 1):
-			img = Image.open(img_file)
+			img = Image.open(file_name)
 			img = img.convert('RGB')
 			img_array = np.asarray(img) / 255
 			img_array = tf.expand_dims(img_array, 0)
 
-			predictions = model.predict(img_array, verbose=True)
+			predictions = self.model.predict(img_array, verbose=True)
 			score = tf.nn.softmax(predictions[0])
 			print(np.argmax(score) + " - " +  (100 * np.max(score)) )
 			return np.argmax(score), 100 * np.max(score)
