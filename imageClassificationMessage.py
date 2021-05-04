@@ -1,5 +1,5 @@
 import sys
-import socket
+from pyimc.network.udp import IMCSenderUDP
 
 class ImageClassificationMessage:
 
@@ -17,15 +17,9 @@ class ImageClassificationMessage:
 			print("ERROR: unknown message: " + sys.argv[3])
 			return
 
-		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, 0)
-		#while True:
-		#	s.sendto(bytes(message.video_source).encoding('utf-8'), (self.host, self.port))
-		#	print("Sent : ", send_data, "\n\n")
-
-		# uint16_t rv = IMC::Packet::serialize(msg, bfr, sizeof(bfr));
-		# IMC::Message * msg = NULL;
-		# std::list<IMC::Message*>* msg_list = new std::list<IMC::Message*>();
-		s.close()
+		# change "test" to IMC message
+		socket = IMCSenderUDP(self.host,self.port)
+		socket.send("test",self.port)
 
 if __name__ == '__main__':
 	message = ImageClassificationMessage(1234)
