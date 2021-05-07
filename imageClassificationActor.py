@@ -15,10 +15,9 @@ import os
 logger = logging.getLogger('examples.ImageClassification')
 
 from PIL import Image
-import tensorflow as tf
 import numpy as np
 
-
+import tfmodel
 
 class ImageClassificationActor(DynamicActor):
 	MODE_NOT_CONFIGURED = 0
@@ -45,20 +44,7 @@ class ImageClassificationActor(DynamicActor):
 		self.output_details = None
 		self.last_run = time.time()
 		self.labels = None
-        
-	def create_model(self,file_model):
-		if(file_model.split('.')[1] == 'tflite'):
-			self.interpreter = tf.lite.Interpreter(model_path= (self.PATH_DIR + file_model) )
-			self.interpreter.allocate_tensors()
-
-			self.input_details = self.interpreter.get_input_details()
-			self.output_details = self.interpreter.get_output_details()
-			self.model_type = 0
-			return self.interpreter
-		if(file_model.split('.')[1] == 'h5'):
-			self.model = keras.models.load_model(self.PATH_DIR + file_model)
-			self.model_type = 1
-			return self.model
+		self.model_type = -1
 	
 	def classify_Image(self,file_name,top_k=1):
 		if(self.model_type == 0):
@@ -70,8 +56,9 @@ class ImageClassificationActor(DynamicActor):
 			self.interpreter.invoke()
 			output_data = self.interpreter.get_tensor(self.output_details[0]['index'])
 			results = np.squeeze(output_data)
-			results = tf.nn.softmax(results).numpy()
+			#results = tf.nn.softmax(results).numpy()
 
+			print(results)
 			ordered = np.argpartition(-results, top_k)
 			return [(i, results[i]) for i in ordered]
 
@@ -98,13 +85,22 @@ class ImageClassificationActor(DynamicActor):
 	def on_Classification_Control(self, msg: pyimc.ImageClassificationControl):
 		logger.info('Received')
 		if msg.command == pyimc.ImageClassificationControl.CommandEnum.SETUP:
-			self.model = self.create_model(msg.model)
+			aux = tfmodel.tfmodel(self.PATH_DIR,msg.model)
+			list_model_param = aux.create_model()
+			if len(list_model_param) == 5:
+				self.interpreter = list_model_param[0]
+				self.input_details = list_model_param[1]
+				self.output_details = list_model_param[2]
+				self.model_type = list_model_param[3]
+				self.labels = list_model_param[4]
+			if len(list_model_param) == 3:
+				self.model = list_model_param[0]
+				self.model_type = list_model_param[1]
+				self.labels = list_model_param[2]
+
 			self.mode = self.MODE_CONFIGURED
 			self.sample_freq = msg.sampling_freq
-			with open((self.PATH_DIR +"dict.txt")) as f:
-				lines = [line.rstrip('\n') for line in f]
-			self.labels = lines
-			print(self.labels)
+
 			try:
 				if self.cam != None:
 					self.cam.release()
@@ -163,17 +159,16 @@ class ImageClassificationActor(DynamicActor):
 		msg = pyimc.ImageClassification()
 		print(results)
 
+
 		for tempTuple in results:
 			label_id, prob = tempTuple
 			print("%s - %.2f - " % (self.labels[label_id], prob ) , end='')
-
 			new_Classification = pyimc.ScoredClassification()
 			prob = abs(prob)
 			new_Classification.score = prob
 			new_Classification.classification = self.labels[label_id]
 			msg.classifications.append(new_Classification)
 
-		print("")
 		msg.frameid = self.frame_counter
 		#msg.data = frame.tobytes()
 		msg.data = cv2.imencode('.png',frame)[1].tobytes()
