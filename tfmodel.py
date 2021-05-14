@@ -24,17 +24,16 @@ class tfmodel:
 		self.model_file = model_file
 
 	def create_model(self):
-		with open((self.path_file + "/dict.txt")) as f:
+		with open((self.path_file + self.model_file + "/dict.txt")) as f:
 			lines = [line.rstrip('\n') for line in f]
 		print(lines)
 
-		if os.path.isfile(self.path_file + self.model_file):
-			interpreter = tf.lite.Interpreter(model_path=self.path_file + self.model_file)
+		if os.path.isfile(self.path_file + self.model_file + "/model.tflite"):
+			interpreter = tf.lite.Interpreter(model_path=self.path_file + self.model_file + "/model.tflite")
 			interpreter.allocate_tensors()
 			input_details = interpreter.get_input_details()
 			output_details = interpreter.get_output_details()
-			model_type = 0
-			return [interpreter,input_details,output_details,model_type,lines]
+			return [interpreter,input_details,output_details,lines]
 
 	#interpreter = list_model_param[0]
 	#input_details = list_model_param[1]
