@@ -24,7 +24,7 @@ class ImageClassificationActor(DynamicActor):
 	MODE_NOT_CONFIGURED = 0
 	MODE_CONFIGURED = 1
 	MODE_ACTIVE = 2
-	PATH_DIR = "model/"
+	PATH_DIR = "/home/miguel/Desktop/Auv Code/"
 
 	def __init__(self, target_name,imc_id):
 		super().__init__(imc_id,static_port=6010)
@@ -57,10 +57,15 @@ class ImageClassificationActor(DynamicActor):
 	def on_Classification_Control(self, msg: pyimc.ImageClassificationControl):
 		logger.info('Received')
 		if msg.command == pyimc.ImageClassificationControl.CommandEnum.SETUP:
-			self.aux = tfmodel.tfmodel(self.PATH_DIR,msg.model)
+			if msg.model == "tflite":
+				self.aux = tfmodel.tfmodel(self.PATH_DIR,msg.model)
+				self.model_type = 0
+			if msg.model == "h5":
+				self.aux = h5model.h5model(self.PATH_DIR, msg.model)
+				self.model_type = 1
+
 			self.list_model_param = self.aux.create_model()
 			self.labels = self.list_model_param[-1]
-
 			self.mode = self.MODE_CONFIGURED
 			self.sample_freq = msg.sampling_freq
 
@@ -109,14 +114,16 @@ class ImageClassificationActor(DynamicActor):
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			return
 
-		frame = cv2.resize(frame,(64,64))
+		frame = cv2.resize(frame,(224,224))
 		cv2.imshow("test", frame)
 		img_name = "opencv_frame_{}.png".format(self.frame_counter)
 		cv2.imwrite(img_name, frame)
 		logger.info("{} written!".format(img_name))
 
 		start_time = time.time()
+
 		results = self.aux.classify_Image(img_name,self.list_model_param)
+
 		elapsed_ms = (time.time() - start_time) * 1000
 		print("Elapsed time: %.2f" % (elapsed_ms))
 		msg = pyimc.ImageClassification()
