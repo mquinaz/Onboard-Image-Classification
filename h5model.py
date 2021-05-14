@@ -17,23 +17,20 @@ import numpy as np
 logger = logging.getLogger('examples.ImageClassification')
 
 
-class tfmodel:
+class h5model:
 
 	def __init__(self, path_file,model_file):
 		self.path_file = path_file
 		self.model_file = model_file
 
 	def create_model(self):
-		with open((self.path_file + "/dict.txt")) as f:
+		with open((self.path_file + self.model_file + "/dict.txt")) as f:
 			lines = [line.rstrip('\n') for line in f]
 		print(lines)
 
-		if os.path.isfile(self.path_file + self.model_file):
-			print("h5 model")
-			# self.model = h5model.model(..)
-			model = keras.models.load_model(self.path_file + model_file)
-			model_type = 1
-			return [model,model_type,lines]
+		if os.path.isfile(self.path_file + self.model_file + "/model.h5"):
+			model = keras.models.load_model(self.path_file + self.model_file + "/model.h5")
+			return [model,lines]
 
 	#self.model = list_model_param[0]
 	#self.model_type = list_model_param[1]
