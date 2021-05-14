@@ -22,33 +22,24 @@ class tfmodel:
 	def __init__(self, path_file,model_file):
 		self.path_file = path_file
 		self.model_file = model_file
+		self.interpreter = tf.lite.Interpreter(model_path=self.path_file + self.model_file + "/model.tflite")
+		self.interpreter.allocate_tensors()
+		self.input_details = self.interpreter.get_input_details()
+		self.output_details = self.interpreter.get_output_details()
+		self.floating_model = self.input_details[0]['dtype'] == np.float32
+		self.height = self.input_details[0]['shape'][1]
+		self.width = self.input_details[0]['shape'][2]
 
-	def create_model(self):
-		with open((self.path_file + self.model_file + "/dict.txt")) as f:
-			lines = [line.rstrip('\n') for line in f]
-		print(lines)
+	#im_rgb = cv2.cvtColor(im_cv, cv2.COLOR_BGR2RGB)
+	def classify_Image(self,file_name,top_k=1):
+		input_shape = self.input_details[0]['shape']
+		input_data = np.expand_dims(cv2.resize( cv2	.imread(file_name) , (self.width,self.height) ) , axis=0).astype(np.float32)
+		if self.floating_model:
+			input_data = (np.float32(input_data) - 127.5) / 127.5
+		self.interpreter.set_tensor(self.input_details[0]['index'], input_data)
 
-		if os.path.isfile(self.path_file + self.model_file + "/model.tflite"):
-			interpreter = tf.lite.Interpreter(model_path=self.path_file + self.model_file + "/model.tflite")
-			interpreter.allocate_tensors()
-			input_details = interpreter.get_input_details()
-			output_details = interpreter.get_output_details()
-			return [interpreter,input_details,output_details,lines]
-
-	#interpreter = list_model_param[0]
-	#input_details = list_model_param[1]
-	#output_details = list_model_param[2]
-	#model_type = list_model_param[3]
-	#labels = list_model_param[4]
-
-	def classify_Image(self,file_name,list_model_param,top_k=1):
-		input_shape = list_model_param[1][0]['shape']
-		input_data = np.expand_dims(cv2.resize( cv2	.imread(file_name) , (64,64) ) , axis=0).astype(np.float32)
-		input_data = (np.float32(input_data) - 127.5) / 127.5
-		list_model_param[0].set_tensor(list_model_param[1][0]['index'], input_data)
-
-		list_model_param[0].invoke()
-		output_data = list_model_param[0].get_tensor(list_model_param[2][0]['index'])
+		self.interpreter.invoke()
+		output_data = self.interpreter.get_tensor(self.output_details[0]['index'])
 		results = np.squeeze(output_data)
 		#results = tf.nn.softmax(results).numpy()
 

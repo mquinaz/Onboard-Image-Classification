@@ -35,15 +35,13 @@ class ImageClassificationActor(DynamicActor):
 		self.heartbeat.append(target_name)
 		self.mode = self.MODE_NOT_CONFIGURED
 		self.vc = None
-		self.model_type = -1
 		self.sample_freq = 0
 		self.frame_counter = 0
 		self.cam = None
 		self.last_run = time.time()
 		self.labels = None
 
-		self.aux = None
-		self.list_model_param = None
+		self.model = None
 
 	def from_target(self, msg):
 		try:
@@ -51,21 +49,20 @@ class ImageClassificationActor(DynamicActor):
 			return node.name == self.target_name
 		except KeyError:
 			return False
-             
-	
+
 	@Subscribe(pyimc.ImageClassificationControl)
 	def on_Classification_Control(self, msg: pyimc.ImageClassificationControl):
 		logger.info('Received')
 		if msg.command == pyimc.ImageClassificationControl.CommandEnum.SETUP:
 			if msg.model == "tflite":
-				self.aux = tfmodel.tfmodel(self.PATH_DIR,msg.model)
-				self.model_type = 0
+				self.model = tfmodel.tfmodel(self.PATH_DIR,msg.model)
 			if msg.model == "h5":
-				self.aux = h5model.h5model(self.PATH_DIR, msg.model)
-				self.model_type = 1
+				self.model = h5model.h5model(self.PATH_DIR, msg.model)
 
-			self.list_model_param = self.aux.create_model()
-			self.labels = self.list_model_param[-1]
+			with open((self.PATH_DIR + msg.model + "/dict.txt")) as f:
+				lines = [line.rstrip('\n') for line in f]
+			print(lines)
+			self.labels = lines
 			self.mode = self.MODE_CONFIGURED
 			self.sample_freq = msg.sampling_freq
 
@@ -114,15 +111,13 @@ class ImageClassificationActor(DynamicActor):
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			return
 
-		frame = cv2.resize(frame,(224,224))
+		#frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 		cv2.imshow("test", frame)
 		img_name = "opencv_frame_{}.png".format(self.frame_counter)
-		cv2.imwrite(img_name, frame)
-		logger.info("{} written!".format(img_name))
 
 		start_time = time.time()
 
-		results = self.aux.classify_Image(img_name,self.list_model_param)
+		results = self.model.classify_Image(img_name)
 
 		elapsed_ms = (time.time() - start_time) * 1000
 		print("Elapsed time: %.2f" % (elapsed_ms))
@@ -140,12 +135,16 @@ class ImageClassificationActor(DynamicActor):
 			msg.classifications.append(new_Classification)
 
 		msg.frameid = self.frame_counter
+		frame = cv2.resize(frame,(128,128))
 		#msg.data = frame.tobytes()
 		msg.data = cv2.imencode('.png',frame)[1].tobytes()
+		cv2.imwrite(img_name, frame)
+		logger.info("{} written!".format(img_name))
 
-		node = self.resolve_node_id(self.target_name)
+		if  self.target_name in  self._nodes.keys():
+			node = self.resolve_node_id(self.target_name)
+			self.send(node,msg)
 
-		self.send(node,msg)
 		self.frame_counter += 1
 		
 if __name__ == '__main__':
