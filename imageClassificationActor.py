@@ -27,7 +27,7 @@ class ImageClassificationActor(DynamicActor):
 	PATH_DIR = "/home/miguel/Desktop/Auv Code/"
 
 	def __init__(self, target_name,imc_id):
-		super().__init__(imc_id,static_port=6010)
+		super().__init__(imc_id,static_port=6011)
 		self.target_name = target_name
 		self.estate = None
 
