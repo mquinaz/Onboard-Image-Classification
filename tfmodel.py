@@ -32,8 +32,14 @@ class tfmodel:
 
 	#im_rgb = cv2.cvtColor(im_cv, cv2.COLOR_BGR2RGB)
 	def classify_Image(self,file_name,top_k=1):
-		input_shape = self.input_details[0]['shape']
-		input_data = np.expand_dims(cv2.resize( cv2	.imread(file_name) , (self.width,self.height) ) , axis=0).astype(np.float32)
+		try:
+			input_shape = self.input_details[0]['shape']
+			input_data = cv2.imread(file_name)
+			input_data = np.expand_dims(cv2.resize(input_data, (self.width, self.height)), axis=0).astype(np.float32)
+
+		except Exception as e:
+			print(str(e) + " in resize function.")
+
 		if self.floating_model:
 			input_data = (np.float32(input_data) - 127.5) / 127.5
 		self.interpreter.set_tensor(self.input_details[0]['index'], input_data)

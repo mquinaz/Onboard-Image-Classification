@@ -7,7 +7,7 @@ from pyimc.common import multicast_ip
 
 if __name__ == '__main__':
 	print(sys.argv)
-	#./dune-sendmsg localhost 6001 ImageClassificationControl 2 newModel.tflite /home/miguel/Downloads/example.mjpg 0.2
+	#./dune-sendmsg localhost 6011 ImageClassificationControl 2 tflite /home/miguel/Downloads/example.mjpg 0.2
 	if sys.argv[3] ==  "ImageClassificationControl" :
 		message = pyimc.ImageClassificationControl()
 		message.command = int(sys.argv[4])

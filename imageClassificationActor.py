@@ -20,11 +20,13 @@ import numpy as np
 import tfmodel
 import h5model
 
+#os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
 class ImageClassificationActor(DynamicActor):
 	MODE_NOT_CONFIGURED = 0
 	MODE_CONFIGURED = 1
 	MODE_ACTIVE = 2
-	PATH_DIR = "/home/miguel/Desktop/Auv Code/"
+	PATH_DIR = "/home/pi/Onboard-Image-Classification/"
 
 	def __init__(self, target_name,imc_id):
 		super().__init__(imc_id,static_port=6011)
@@ -107,7 +109,7 @@ class ImageClassificationActor(DynamicActor):
 			logger.error("failed to grab frame")
 			self.mode = self.MODE_CONFIGURED
 			return
-		
+
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			return
 
@@ -117,7 +119,7 @@ class ImageClassificationActor(DynamicActor):
 
 		start_time = time.time()
 
-		results = self.model.classify_Image(img_name)
+		self.model.classify_Image(img_name)
 
 		elapsed_ms = (time.time() - start_time) * 1000
 		print("Elapsed time: %.2f" % (elapsed_ms))
@@ -135,7 +137,7 @@ class ImageClassificationActor(DynamicActor):
 			msg.classifications.append(new_Classification)
 
 		msg.frameid = self.frame_counter
-		frame = cv2.resize(frame,(128,128))
+		#frame = cv2.resize(frame,(128,128))
 		#msg.data = frame.tobytes()
 		msg.data = cv2.imencode('.png',frame)[1].tobytes()
 		cv2.imwrite(img_name, frame)
