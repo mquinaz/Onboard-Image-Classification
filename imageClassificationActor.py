@@ -113,13 +113,14 @@ class ImageClassificationActor(DynamicActor):
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			return
 
+		print(frame.shape)
 		#frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 		cv2.imshow("test", frame)
 		img_name = "opencv_frame_{}.png".format(self.frame_counter)
 
 		start_time = time.time()
 
-		self.model.classify_Image(img_name)
+		results = self.model.classify_Image(frame)
 
 		elapsed_ms = (time.time() - start_time) * 1000
 		print("Elapsed time: %.2f" % (elapsed_ms))

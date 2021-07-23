@@ -31,14 +31,10 @@ class tfmodel:
 		self.width = self.input_details[0]['shape'][2]
 
 	#im_rgb = cv2.cvtColor(im_cv, cv2.COLOR_BGR2RGB)
-	def classify_Image(self,file_name,top_k=1):
-		try:
-			input_shape = self.input_details[0]['shape']
-			input_data = cv2.imread(file_name)
-			input_data = np.expand_dims(cv2.resize(input_data, (self.width, self.height)), axis=0).astype(np.float32)
-
-		except Exception as e:
-			print(str(e) + " in resize function.")
+	def classify_Image(self,frame,top_k=1):
+		input_shape = self.input_details[0]['shape']
+		#input_data = cv2.imread(file_name)
+		input_data = np.expand_dims(cv2.resize(frame, (self.width, self.height)), axis=0).astype(np.float32)
 
 		if self.floating_model:
 			input_data = (np.float32(input_data) - 127.5) / 127.5
@@ -52,7 +48,3 @@ class tfmodel:
 		print(results)
 		ordered = np.argpartition(-results, top_k)
 		return [(i, results[i]) for i in ordered]
-
-#recebes msg.model e acedes a pasta path_dir + msg.model
-#create_model carrega path_dir + msg.model + "/model.tflite"
-#path_dir + msg.model + "/dict.txt"
