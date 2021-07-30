@@ -22,7 +22,7 @@ class tfmodel:
 	def __init__(self, path_file,model_file):
 		self.path_file = path_file
 		self.model_file = model_file
-		self.interpreter = tf.lite.Interpreter(model_path=self.path_file + self.model_file + "/model.tflite")
+		self.interpreter = tf.lite.Interpreter(model_path=self.path_file + self.model_file + "/autoML.tflite")
 		self.interpreter.allocate_tensors()
 		self.input_details = self.interpreter.get_input_details()
 		self.output_details = self.interpreter.get_output_details()
@@ -33,8 +33,7 @@ class tfmodel:
 	#im_rgb = cv2.cvtColor(im_cv, cv2.COLOR_BGR2RGB)
 	def classify_Image(self,frame,top_k=1):
 		input_shape = self.input_details[0]['shape']
-		#input_data = cv2.imread(file_name)
-		input_data = np.expand_dims(cv2.resize(frame, (self.width, self.height)), axis=0).astype(np.float32)
+		input_data = np.expand_dims(cv2.resize(frame, (self.width, self.height)), axis=0)#.astype(np.float32)
 
 		if self.floating_model:
 			input_data = (np.float32(input_data) - 127.5) / 127.5
@@ -43,7 +42,7 @@ class tfmodel:
 		self.interpreter.invoke()
 		output_data = self.interpreter.get_tensor(self.output_details[0]['index'])
 		results = np.squeeze(output_data)
-		#results = tf.nn.softmax(results).numpy()
+		results = tf.nn.softmax(results).numpy()
 
 		print(results)
 		ordered = np.argpartition(-results, top_k)

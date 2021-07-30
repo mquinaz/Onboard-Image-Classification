@@ -26,7 +26,7 @@ class ImageClassificationActor(DynamicActor):
 	MODE_NOT_CONFIGURED = 0
 	MODE_CONFIGURED = 1
 	MODE_ACTIVE = 2
-	PATH_DIR = "/home/pi/Onboard-Image-Classification/"
+	PATH_DIR = "/home/miguel/Desktop/Auv Code/"
 
 	def __init__(self, target_name,imc_id):
 		super().__init__(imc_id,static_port=6011)
@@ -100,23 +100,19 @@ class ImageClassificationActor(DynamicActor):
 			return
 
 		current_time = time.time()
-		if( current_time - self.last_run < 1 / self.sample_freq ):
-			return
-		
-		self.last_run = current_time
+
 		ret, frame = self.cam.read()
 		if not ret:
 			logger.error("failed to grab frame")
 			self.mode = self.MODE_CONFIGURED
 			return
 
-		if cv2.waitKey(1) & 0xFF == ord('q'):
-			return
-
-		print(frame.shape)
 		#frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 		cv2.imshow("test", frame)
 		img_name = "opencv_frame_{}.png".format(self.frame_counter)
+		if( current_time - self.last_run < 1 / self.sample_freq ):
+			return
+		self.last_run = current_time
 
 		start_time = time.time()
 
