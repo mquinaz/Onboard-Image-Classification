@@ -131,18 +131,16 @@ class ImageClassificationActor(DynamicActor):
             results = self.model.classify_Image(frame)
         except:
             traceback.print_exc()
+            return
 
-        elapsed_ms = (time.time() - start_time) * 1000
-        print('Elapsed time: %.2f' % (elapsed_ms))
+        elapsed_time = time.time() - start_time
+        logging.info('Classification time: %.3d s' % elapsed_time)
+        logging.info(results)
         msg = pyimc.ImageClassification()
-        print(results)
-        for tempTuple in results:
-            label_id, prob = tempTuple
-            print('%s - %.2f - ' % (self.labels[label_id], prob ) , end='')
+        for (label, score) in results:
             new_Classification = pyimc.ScoredClassification()
-            prob = abs(prob)
-            new_Classification.score = int(prob*100)
-            new_Classification.classification = self.labels[label_id]
+            new_Classification.score = int(round(score*100))
+            new_Classification.classification = label
             msg.classifications.append(new_Classification)
 
         msg.frameid = self.frame_counter
