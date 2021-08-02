@@ -5,18 +5,15 @@ import logging
 import os
 import sys
 import pyimc
+import tfmodel
 import time
 import traceback
 from pyimc.actors.dynamic import DynamicActor
 from pyimc.decorators import Subscribe, RunOnce, Periodic
 
 
-
-import tfmodel
-
 #os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 PATH_DIR = os.path.dirname(os.path.abspath(sys.argv[0])) + '/models'
-print(PATH_DIR)
 
 class ImageClassificationActor(DynamicActor):
     MODE_NOT_CONFIGURED = 0
@@ -53,7 +50,7 @@ class ImageClassificationActor(DynamicActor):
         if msg.command == pyimc.ImageClassificationControl.CommandEnum.SETUP:
             try:
               logging.info('setting up')
-              self.model = tfmodel.tfmodel(PATH_DIR, msg.model)
+              self.model = tfmodel.Classifier(PATH_DIR, msg.model)
               with open((PATH_DIR + '/' + msg.model + '/dict.txt')) as f:
                 lines = [line.rstrip('\n') for line in f]
               print(lines)
@@ -134,7 +131,7 @@ class ImageClassificationActor(DynamicActor):
             return
 
         elapsed_time = time.time() - start_time
-        logging.info('Classification time: %.3d s' % elapsed_time)
+        logging.info('Classification time: %.3f s' % elapsed_time)
         logging.info(results)
         msg = pyimc.ImageClassification()
         for (label, score) in results:
