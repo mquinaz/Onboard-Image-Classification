@@ -9,7 +9,7 @@ parser.add_argument("-p", "--port", help="host port", default=6011, type=int)
 parser.add_argument("-m", "--model", help="model id (for setup command)", default="autoML")
 parser.add_argument("-s", "--sampling_freq", help="sampling frequency (for setup command)", default="1.0", type=float)
 parser.add_argument("-v", "--video_source", help="video source (for setup command)", default="example.mjpg")
-parser.add_argument("command", help="Control command: 'setup' or 'stop')", choices=['setup', 'start', 'stop'])
+parser.add_argument("command", help="Control command", choices=['setup', 'start', 'stop'])
 args = parser.parse_args()
 
 message = pyimc.ImageClassificationControl()
