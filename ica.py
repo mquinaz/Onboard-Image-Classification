@@ -1,5 +1,6 @@
 import warnings
 warnings.filterwarnings('ignore', category=FutureWarning)
+import argparse
 import cv2
 import logging
 import os
@@ -10,20 +11,24 @@ import time
 import traceback
 from pyimc.actors.dynamic import DynamicActor
 from pyimc.decorators import Subscribe, RunOnce, Periodic
+from pyimc.node import IMCService
 
 
 #os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-PATH_DIR = os.path.dirname(os.path.abspath(sys.argv[0])) + '/models'
 
 class ImageClassificationActor(DynamicActor):
     MODE_NOT_CONFIGURED = 0
     MODE_CONFIGURED = 1
     MODE_ACTIVE = 2
 
-    def __init__(self, target_name,imc_id):
-        super().__init__(imc_id,static_port=6011)
-        self.target_name = target_name
+    def __init__(self, parameters):
+        super().__init__(parameters.imc_address,static_port=parameters.local_port)
+        self.parameters = parameters
         self.video = None
+        self._static_transports[pyimc.ImageClassification] = \
+          [IMCService(ip=parameters.static_dest_addr,
+                     port=parameters.static_dest_port, 
+                     scheme='udp')]
         self.reset()
 
     def reset(self):
@@ -54,7 +59,7 @@ class ImageClassificationActor(DynamicActor):
             try:
               logging.info('setting up')
               self.setup = msg
-              self.classifier = tfmodel.Classifier(PATH_DIR, self.setup.model)
+              self.classifier = tfmodel.Classifier(self.parameters.model_path, self.setup.model)
               self.video = cv2.VideoCapture(self.setup.video_source)
               if not self.video.isOpened():
                  raise Exception('Error setting up video source')
@@ -84,7 +89,7 @@ class ImageClassificationActor(DynamicActor):
         else:
             logging.error('invalid command received')
 
-    @Periodic(0.1)
+    @Periodic(0.001)
     def classification_loop(self):       
         # Do nothing if not active
         if self.mode != self.MODE_ACTIVE:
@@ -125,44 +130,50 @@ class ImageClassificationActor(DynamicActor):
         logging.info('{} written!'.format(img_name))
 
         # Build ImageClassification message
-        msg = pyimc.ImageClassification()
-        msg.frameid = self.frame_counter
+        ic_msg = pyimc.ImageClassification()
+        ic_msg.frameid = self.frame_counter
         for (label, score) in results:
             sc_msg = pyimc.ScoredClassification()
             sc_msg.score = int(round(score*100))
             sc_msg.classification = label
-            msg.classifications.append(sc_msg)
-        logging.info(msg)
-        msg.data = cv2.imencode('.png',frame)[1].tobytes()
+            ic_msg.classifications.append(sc_msg)
+        logging.info(ic_msg)
+        frame = cv2.resize(frame, (128,128))
+        ic_msg.data = cv2.imencode('.png',frame)[1].tobytes()
 
         # Send message
-        if  self.target_name in  self._nodes.keys():
-            node = self.resolve_node_id(self.target_name)
-            self.send(node,msg)
+        self.send_static(ic_msg)
 
     def dump_vc_props(self):
-        logging.info("CV_CAP_PROP_FRAME_WIDTH: '{}'".format(self.video.get(cv2.CAP_PROP_FRAME_WIDTH)))
-        logging.info("CV_CAP_PROP_FRAME_HEIGHT : '{}'".format(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-        logging.info("CAP_PROP_FPS : '{}'".format(self.video.get(cv2.CAP_PROP_FPS)))
-        logging.info("CAP_PROP_POS_MSEC : '{}'".format(self.video.get(cv2.CAP_PROP_POS_MSEC)))
-        logging.info("CAP_PROP_FRAME_COUNT  : '{}'".format(self.video.get(cv2.CAP_PROP_FRAME_COUNT)))
-        logging.info("CAP_PROP_BRIGHTNESS : '{}'".format(self.video.get(cv2.CAP_PROP_BRIGHTNESS)))
-        logging.info("CAP_PROP_CONTRAST : '{}'".format(self.video.get(cv2.CAP_PROP_CONTRAST)))
-        logging.info("CAP_PROP_SATURATION : '{}'".format(self.video.get(cv2.CAP_PROP_SATURATION)))
-        logging.info("CAP_PROP_HUE : '{}'".format(self.video.get(cv2.CAP_PROP_HUE)))
-        logging.info("CAP_PROP_GAIN  : '{}'".format(self.video.get(cv2.CAP_PROP_GAIN)))
-        logging.info("CAP_PROP_CONVERT_RGB : '{}'".format(self.video.get(cv2.CAP_PROP_CONVERT_RGB)))
+        logging.info('CV_CAP_PROP_FRAME_WIDTH: {}'.format(self.video.get(cv2.CAP_PROP_FRAME_WIDTH)))
+        logging.info('CV_CAP_PROP_FRAME_HEIGHT : {}'.format(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+        logging.info('CAP_PROP_FPS : {}'.format(self.video.get(cv2.CAP_PROP_FPS)))
+        logging.info('CAP_PROP_POS_MSEC : {}'.format(self.video.get(cv2.CAP_PROP_POS_MSEC)))
+        logging.info('CAP_PROP_FRAME_COUNT  : {}'.format(self.video.get(cv2.CAP_PROP_FRAME_COUNT)))
+        logging.info('CAP_PROP_BRIGHTNESS : {}'.format(self.video.get(cv2.CAP_PROP_BRIGHTNESS)))
+        logging.info('CAP_PROP_CONTRAST : {}'.format(self.video.get(cv2.CAP_PROP_CONTRAST)))
+        logging.info('CAP_PROP_SATURATION : {}'.format(self.video.get(cv2.CAP_PROP_SATURATION)))
+        logging.info('CAP_PROP_HUE : {}'.format(self.video.get(cv2.CAP_PROP_HUE)))
+        logging.info('CAP_PROP_GAIN  : {}'.format(self.video.get(cv2.CAP_PROP_GAIN)))
+        logging.info('CAP_PROP_CONVERT_RGB : {}'.format(self.video.get(cv2.CAP_PROP_CONVERT_RGB)))
     
         
 if __name__ == '__main__':
-    # Setup logging level and console output
+    DEFAULT_MODEL_PATH = os.path.dirname(os.path.abspath(sys.argv[0])) + '/models'
+    # Parse program parameters
+    parser = argparse.ArgumentParser(description='Image classification actor.')
+    parser.add_argument('-i', '--imc_address', help='local IMC address for actor', type=int, default=0x3334)
+    parser.add_argument('-l', '--local_port', help='local port for incoming messages', default=6011, type=int)
+    parser.add_argument('-m', '--model_path', help='path for classification models', default=DEFAULT_MODEL_PATH)
+    parser.add_argument('-a', '--static_dest_addr', help='static destination host', default='127.0.0.1')
+    parser.add_argument('-p', '--static_dest_port', help='static destination port', type=int, default=6012)
+    parameters = parser.parse_args()
+
+    # Setup logging
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s - %(levelname)s - %(message)s',
                         datefmt='%Y-%m-%d %H:%M:%S', stream=sys.stderr)
-    logging.info('started')
-    
-    # Create an actor, targeting the lauv-simulator-1 system
-    actor = ImageClassificationActor('lauv-simulator-1',1234)
-
-    # This command starts the asyncio event loop
+    logging.info('starting')
+    # Create the actor and run it
+    actor = ImageClassificationActor(parameters)
     actor.run()
