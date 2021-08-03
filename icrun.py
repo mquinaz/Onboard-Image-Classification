@@ -125,7 +125,7 @@ class ImageClassificationActor(DynamicActor):
 
         # Save image to disk
         self.frame_counter += 1
-        img_name = 'opencv_frame_{:04d}.png'.format(self.frame_counter)
+        img_name = '{}/f{:04d}.png'.format(parameters.data_path, self.frame_counter)
         cv2.imwrite(img_name, frame)
         logging.info('{} written!'.format(img_name))
 
@@ -159,11 +159,14 @@ class ImageClassificationActor(DynamicActor):
     
         
 if __name__ == '__main__':
-    DEFAULT_MODEL_PATH = os.path.dirname(os.path.abspath(sys.argv[0])) + '/models'
+    INSTALL_PATH = os.path.dirname(os.path.abspath(sys.argv[0])) + '/models'
+    DEFAULT_MODEL_PATH = INSTALL_PATH + '/models'
+    DEFAULT_DATA_PATH = INSTALL_PATH + '/data'
     # Parse program parameters
     parser = argparse.ArgumentParser(description='Image classification actor.')
     parser.add_argument('-i', '--imc_address', help='local IMC address for actor', type=int, default=0x3334)
     parser.add_argument('-l', '--local_port', help='local port for incoming messages', default=6011, type=int)
+    parser.add_argument('-d', '--data_path', help='path for generated data files', default=DEFAULT_DATA_PATH)
     parser.add_argument('-m', '--model_path', help='path for classification models', default=DEFAULT_MODEL_PATH)
     parser.add_argument('-a', '--static_dest_addr', help='static destination host', default='127.0.0.1')
     parser.add_argument('-p', '--static_dest_port', help='static destination port', type=int, default=6012)
