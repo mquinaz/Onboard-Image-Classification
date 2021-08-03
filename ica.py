@@ -23,135 +23,136 @@ class ImageClassificationActor(DynamicActor):
     def __init__(self, target_name,imc_id):
         super().__init__(imc_id,static_port=6011)
         self.target_name = target_name
-        self.estate = None
+        self.video = None
+        self.reset()
 
-        # This list contains the target systems to maintain communications with
-        self.heartbeat.append(target_name)
+    def reset(self):
+        logging.info('resetting internal state')
+        # Mode flag
         self.mode = self.MODE_NOT_CONFIGURED
-        self.vc = None
-        self.sample_freq = 0
+        # ImageClasssificationControl message containing setup
+        self.setup = None
+        # Counter for classified frames
         self.frame_counter = 0
-        self.cam = None
-        self.last_run = time.time()
-        self.labels = None
-
-        self.model = None
-
-    def from_target(self, msg):
-        try:
-            node = self.resolve_node_id(msg)
-            return node.name == self.target_name
-        except KeyError:
-            return False
+        # Timestamp for last classification
+        self.last_run = 0
+        # Model 
+        self.classifier = None
+        # Video source
+        if self.video != None:
+           try:
+             self.video.release()
+           except:
+             pass
+        self.video = None
 
     @Subscribe(pyimc.ImageClassificationControl)
     def on_Classification_Control(self, msg: pyimc.ImageClassificationControl):
         logging.info('Received control message -- {}'.format(msg))
         if msg.command == pyimc.ImageClassificationControl.CommandEnum.SETUP:
+            self.reset()
             try:
               logging.info('setting up')
-              self.model = tfmodel.Classifier(PATH_DIR, msg.model)
-              with open((PATH_DIR + '/' + msg.model + '/dict.txt')) as f:
-                lines = [line.rstrip('\n') for line in f]
-              print(lines)
-              self.labels = lines
-              self.sample_freq = msg.sampling_freq
-
-              if self.cam != None:
-                 self.cam.release()
-              self.cam = cv2.VideoCapture(msg.video_source)
-              if not self.cam.isOpened():
+              self.setup = msg
+              self.classifier = tfmodel.Classifier(PATH_DIR, self.setup.model)
+              self.video = cv2.VideoCapture(self.setup.video_source)
+              if not self.video.isOpened():
                  raise Exception('Error setting up video source')
-                 self.cam.release()
               self.dump_vc_props()
               self.mode = self.MODE_CONFIGURED
-              self.convert_frames_to_rgb = int(self.cam.get(cv2.CAP_PROP_CONVERT_RGB)) != 0
+              self.convert_frames_to_rgb = int(self.video.get(cv2.CAP_PROP_CONVERT_RGB)) != 0
               logging.info('setup complete')
             except:
                 logging.error('Error during setup')
                 traceback.print_exc()
-                self.mode = self.MODE_NOT_CONFIGURED
-            
+                self.reset()
         elif msg.command == pyimc.ImageClassificationControl.CommandEnum.START:
             if self.mode == self.MODE_CONFIGURED:
                 self.mode = self.MODE_ACTIVE
-                logging.info('active')
+                logging.info('now active')
             elif self.mode == self.MODE_NOT_CONFIGURED:
-                logging.error('setup not done')
+                logging.error('cannot start, not configured!')
             else:
                 logging.error('already active')
-                
         elif msg.command == pyimc.ImageClassificationControl.CommandEnum.STOP:    
             if self.mode == self.MODE_ACTIVE:    
                 self.mode = self.MODE_CONFIGURED  
-                logging.info('inactive')  
-                cv2.destroyAllWindows()       
+                logging.info('now inactive')  
+                # cv2.destroyAllWindows()       
             else:
                 logging.error('not active') 
+        else:
+            logging.error('invalid command received')
 
-    def dump_vc_props(self):
-        logging.info("CV_CAP_PROP_FRAME_WIDTH: '{}'".format(self.cam.get(cv2.CAP_PROP_FRAME_WIDTH)))
-        logging.info("CV_CAP_PROP_FRAME_HEIGHT : '{}'".format(self.cam.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-        logging.info("CAP_PROP_FPS : '{}'".format(self.cam.get(cv2.CAP_PROP_FPS)))
-        logging.info("CAP_PROP_POS_MSEC : '{}'".format(self.cam.get(cv2.CAP_PROP_POS_MSEC)))
-        logging.info("CAP_PROP_FRAME_COUNT  : '{}'".format(self.cam.get(cv2.CAP_PROP_FRAME_COUNT)))
-        logging.info("CAP_PROP_BRIGHTNESS : '{}'".format(self.cam.get(cv2.CAP_PROP_BRIGHTNESS)))
-        logging.info("CAP_PROP_CONTRAST : '{}'".format(self.cam.get(cv2.CAP_PROP_CONTRAST)))
-        logging.info("CAP_PROP_SATURATION : '{}'".format(self.cam.get(cv2.CAP_PROP_SATURATION)))
-        logging.info("CAP_PROP_HUE : '{}'".format(self.cam.get(cv2.CAP_PROP_HUE)))
-        logging.info("CAP_PROP_GAIN  : '{}'".format(self.cam.get(cv2.CAP_PROP_GAIN)))
-        logging.info("CAP_PROP_CONVERT_RGB : '{}'".format(self.cam.get(cv2.CAP_PROP_CONVERT_RGB)))
-    
     @Periodic(0.1)
-    def main_Loop(self):       
+    def classification_loop(self):       
+        # Do nothing if not active
         if self.mode != self.MODE_ACTIVE:
             return
 
-        current_time = time.time()
-
-        ret, frame = self.cam.read()
+        # Capture frame
+        ret, frame = self.video.read()
         if not ret:
             logging.error('failed to grab frame')
-            self.mode = self.MODE_NOT_CONFIGURED
+            self.reset()
             return
 
+        # Account for sampling frequency
+        current_time = time.time()
+        if  current_time - self.last_run < 1 / self.setup.sampling_freq:
+            return
+
+        # Convert to RGB if necessary
+        # cv2.imshow('test', frame)
         if self.convert_frames_to_rgb:
            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        # cv2.imshow('test', frame)
-        if( current_time - self.last_run < 1 / self.sample_freq ):
-            return
-        self.last_run = current_time
 
-        start_time = time.time()
-
+        # Invoke model to classify image
         try:
-            results = self.model.classify_Image(frame)
+            results = self.classifier.classify(frame)
         except:
             traceback.print_exc()
             return
-
-        elapsed_time = time.time() - start_time
-        logging.info('Classification time: %.3f s' % elapsed_time)
+        self.last_run = current_time
+        classification_time = time.time() - current_time
+        logging.info('Classification time: %.3f s' % classification_time)
         logging.info(results)
-        msg = pyimc.ImageClassification()
-        for (label, score) in results:
-            new_Classification = pyimc.ScoredClassification()
-            new_Classification.score = int(round(score*100))
-            new_Classification.classification = label
-            msg.classifications.append(new_Classification)
 
-        msg.frameid = self.frame_counter
-        logging.info(msg)
-        msg.data = cv2.imencode('.png',frame)[1].tobytes()
+        # Save image to disk
+        self.frame_counter += 1
         img_name = 'opencv_frame_{}.png'.format(self.frame_counter)
         cv2.imwrite(img_name, frame)
         logging.info('{} written!'.format(img_name))
 
+        # Build ImageClassification message
+        msg = pyimc.ImageClassification()
+        msg.frameid = self.frame_counter
+        for (label, score) in results:
+            sc_msg = pyimc.ScoredClassification()
+            sc_msg.score = int(round(score*100))
+            sc_msg.classification = label
+            msg.classifications.append(sc_msg)
+        logging.info(msg)
+        msg.data = cv2.imencode('.png',frame)[1].tobytes()
+
+        # Send message
         if  self.target_name in  self._nodes.keys():
             node = self.resolve_node_id(self.target_name)
             self.send(node,msg)
 
-        self.frame_counter += 1
+    def dump_vc_props(self):
+        logging.info("CV_CAP_PROP_FRAME_WIDTH: '{}'".format(self.video.get(cv2.CAP_PROP_FRAME_WIDTH)))
+        logging.info("CV_CAP_PROP_FRAME_HEIGHT : '{}'".format(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+        logging.info("CAP_PROP_FPS : '{}'".format(self.video.get(cv2.CAP_PROP_FPS)))
+        logging.info("CAP_PROP_POS_MSEC : '{}'".format(self.video.get(cv2.CAP_PROP_POS_MSEC)))
+        logging.info("CAP_PROP_FRAME_COUNT  : '{}'".format(self.video.get(cv2.CAP_PROP_FRAME_COUNT)))
+        logging.info("CAP_PROP_BRIGHTNESS : '{}'".format(self.video.get(cv2.CAP_PROP_BRIGHTNESS)))
+        logging.info("CAP_PROP_CONTRAST : '{}'".format(self.video.get(cv2.CAP_PROP_CONTRAST)))
+        logging.info("CAP_PROP_SATURATION : '{}'".format(self.video.get(cv2.CAP_PROP_SATURATION)))
+        logging.info("CAP_PROP_HUE : '{}'".format(self.video.get(cv2.CAP_PROP_HUE)))
+        logging.info("CAP_PROP_GAIN  : '{}'".format(self.video.get(cv2.CAP_PROP_GAIN)))
+        logging.info("CAP_PROP_CONVERT_RGB : '{}'".format(self.video.get(cv2.CAP_PROP_CONVERT_RGB)))
+    
         
 if __name__ == '__main__':
     # Setup logging level and console output

@@ -26,7 +26,7 @@ class Classifier:
     self.height = self.input_details[0]['shape'][1]
     self.width = self.input_details[0]['shape'][2]
 
-  def classify_Image(self,frame,top_k=1):
+  def classify(self,frame,top_k=1):
     input_data = np.expand_dims(cv2.resize(frame, (self.width, self.height)), axis=0)#.astype(np.float32)
     if self.floating_model:
       input_data = (np.float32(input_data) - 127.5) / 127.5
