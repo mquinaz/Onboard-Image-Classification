@@ -22,7 +22,6 @@ class Classifier:
     self.input_details = self.interpreter.get_input_details()
     self.output_details = self.interpreter.get_output_details()
     self.floating_model = self.input_details[0]['dtype'] == np.float32
-    print(self.floating_model)
     self.height = self.input_details[0]['shape'][1]
     self.width = self.input_details[0]['shape'][2]
 

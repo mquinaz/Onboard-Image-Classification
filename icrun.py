@@ -107,14 +107,13 @@ class ImageClassificationActor(DynamicActor):
         if  current_time - self.last_run < 1 / self.setup.sampling_freq:
             return
 
-        # Convert to RGB if necessary
+        # Convert to RGB for proper handling by TFLite
         # cv2.imshow('test', frame)
-        if self.convert_frames_to_rgb:
-           frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        cl_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-        # Invoke model to classify image
+        # Invoke model to classify frame
         try:
-            results = self.classifier.classify(frame)
+            results = self.classifier.classify(cl_frame)
         except:
             traceback.print_exc()
             return
@@ -125,7 +124,7 @@ class ImageClassificationActor(DynamicActor):
 
         # Save image to disk
         self.frame_counter += 1
-        img_name = 'opencv_frame_{}.png'.format(self.frame_counter)
+        img_name = 'opencv_frame_{:04d}.png'.format(self.frame_counter)
         cv2.imwrite(img_name, frame)
         logging.info('{} written!'.format(img_name))
 
