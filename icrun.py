@@ -18,6 +18,7 @@ from pyimc.node import IMCService
 #os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 class ImageClassificationActor(DynamicActor):
+    # Modes of operation
     MODE_NOT_CONFIGURED = 0
     MODE_CONFIGURED = 1
     MODE_ACTIVE = 2
@@ -99,7 +100,7 @@ class ImageClassificationActor(DynamicActor):
         # Capture frame
         ret, frame = self.video.read()
         if not ret:
-            logging.error('failed to grab frame')
+            logging.error('failed to grab frame - end of video stream reached?')
             self.reset()
             return
 
@@ -159,7 +160,7 @@ class ImageClassificationActor(DynamicActor):
     
         
 if __name__ == '__main__':
-    INSTALL_PATH = os.path.dirname(os.path.abspath(sys.argv[0])) + '/models'
+    INSTALL_PATH = os.path.dirname(os.path.abspath(sys.argv[0])) 
     DEFAULT_MODEL_PATH = INSTALL_PATH + '/models'
     DEFAULT_DATA_PATH = INSTALL_PATH + '/data'
     # Parse program parameters
