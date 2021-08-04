@@ -150,14 +150,22 @@ class ImageClassificationActor(DynamicActor):
             sc_msg.classification = label
             ic_msg.classifications.append(sc_msg)
         logging.info(ic_msg)
-        frame = cv2.resize(frame, (128,128))
-        ic_msg.data = cv2.imencode('.png',frame)[1].tobytes()
+        compressed_frame = cv2.resize(frame, (128,128))
+        ic_msg.data = cv2.imencode('.png',compressed_frame)[1].tobytes()
 
         # Log message
         self.log_message(ic_msg)
 
         # Send message
         self.send_static(ic_msg, set_timestamp=False)
+
+        # Display image on GUI
+        self.show_image(frame)
+
+    def show_image(self, frame):
+        if not self.parameters.headless:
+            gui_frame = frame # cv2.resize(frame, (self.parameters.window_size, self.parameters.window_size))
+            cv2.imshow('Onboard image classification', gui_frame)
 
     def log_message(self, message):
         message.src = self.imc_id
@@ -191,6 +199,8 @@ if __name__ == '__main__':
     parser.add_argument('-m', '--model_path', help='path for classification models', default=DEFAULT_MODEL_PATH)
     parser.add_argument('-a', '--static_dest_addr', help='static destination host', default='127.0.0.1')
     parser.add_argument('-p', '--static_dest_port', help='static destination port', type=int, default=6012)
+    parser.add_argument('-w', '--window-size', help='GUI window size', type=int, default=800)
+    parser.add_argument('-H', '--headless', help='headless mode (no GUI)', action='store_true')
     parameters = parser.parse_args()
 
     # Setup logging
