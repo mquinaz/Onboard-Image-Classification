@@ -3,6 +3,7 @@ import warnings
 warnings.filterwarnings('ignore', category=FutureWarning)
 import argparse
 import cv2
+import datetime
 import logging
 import os
 import sys
@@ -26,7 +27,6 @@ class ImageClassificationActor(DynamicActor):
     def __init__(self, parameters):
         super().__init__(parameters.imc_address,static_port=parameters.local_port)
         self.parameters = parameters
-        self.video = None
         self._static_transports[pyimc.ImageClassification] = \
           [IMCService(ip=parameters.static_dest_addr,
                      port=parameters.static_dest_port, 
@@ -45,13 +45,19 @@ class ImageClassificationActor(DynamicActor):
         self.last_run = 0
         # Model 
         self.classifier = None
+        # Data dir
+        self.data_dir = None
+        # Log file
+        if hasattr(self, 'lsf_file') and self.lsf_file != None:
+            self.lsf_file.close()
+        self.lsf_file = None
         # Video source
-        if self.video != None:
+        if hasattr(self, 'video_source') and self.video_source != None:
            try:
-             self.video.release()
+             self.video_source.release()
            except:
              pass
-        self.video = None
+        self.video_source = None
 
     @Subscribe(pyimc.ImageClassificationControl)
     def on_Classification_Control(self, msg: pyimc.ImageClassificationControl):
@@ -62,13 +68,18 @@ class ImageClassificationActor(DynamicActor):
               logging.info('setting up')
               self.setup = msg
               self.classifier = tfmodel.Classifier(self.parameters.model_path, self.setup.model)
-              self.video = cv2.VideoCapture(self.setup.video_source)
-              if not self.video.isOpened():
+              self.video_source = cv2.VideoCapture(self.setup.video_source)
+              if not self.video_source.isOpened():
                  raise Exception('Error setting up video source')
               self.dump_vc_props()
               self.mode = self.MODE_CONFIGURED
-              self.convert_frames_to_rgb = int(self.video.get(cv2.CAP_PROP_CONVERT_RGB)) != 0
-              logging.info('setup complete')
+              self.data_dir = '{}/{}/{}'.format(parameters.data_path, 
+                                                self.setup.model,
+                                                datetime.datetime.now().strftime('%Y%m%d/%H%M%S'))
+              os.makedirs(self.data_dir)
+              self.lsf_file = open(self.data_dir + '/Data.lsf', 'wb')
+              self.log_message(self.setup)
+              logging.info('setup complete - data dir: ' + self.data_dir)
             except:
                 logging.error('Error during setup')
                 traceback.print_exc()
@@ -98,7 +109,7 @@ class ImageClassificationActor(DynamicActor):
             return
 
         # Capture frame
-        ret, frame = self.video.read()
+        ret, frame = self.video_source.read()
         if not ret:
             logging.error('failed to grab frame - end of video stream reached?')
             self.reset()
@@ -126,7 +137,7 @@ class ImageClassificationActor(DynamicActor):
 
         # Save image to disk
         self.frame_counter += 1
-        img_name = '{}/f{:04d}.png'.format(parameters.data_path, self.frame_counter)
+        img_name = '{}/f{:04d}.png'.format(self.data_dir, self.frame_counter)
         cv2.imwrite(img_name, frame)
         logging.info('{} written!'.format(img_name))
 
@@ -142,21 +153,30 @@ class ImageClassificationActor(DynamicActor):
         frame = cv2.resize(frame, (128,128))
         ic_msg.data = cv2.imencode('.png',frame)[1].tobytes()
 
+        # Log message
+        self.log_message(ic_msg)
+
         # Send message
-        self.send_static(ic_msg)
+        self.send_static(ic_msg, set_timestamp=False)
+
+    def log_message(self, message):
+        message.src = self.imc_id
+        message.set_timestamp_now()
+        data = pyimc.Packet.serialize(message)
+        self.lsf_file.write(data)
 
     def dump_vc_props(self):
-        logging.info('CV_CAP_PROP_FRAME_WIDTH: {}'.format(self.video.get(cv2.CAP_PROP_FRAME_WIDTH)))
-        logging.info('CV_CAP_PROP_FRAME_HEIGHT : {}'.format(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-        logging.info('CAP_PROP_FPS : {}'.format(self.video.get(cv2.CAP_PROP_FPS)))
-        logging.info('CAP_PROP_POS_MSEC : {}'.format(self.video.get(cv2.CAP_PROP_POS_MSEC)))
-        logging.info('CAP_PROP_FRAME_COUNT  : {}'.format(self.video.get(cv2.CAP_PROP_FRAME_COUNT)))
-        logging.info('CAP_PROP_BRIGHTNESS : {}'.format(self.video.get(cv2.CAP_PROP_BRIGHTNESS)))
-        logging.info('CAP_PROP_CONTRAST : {}'.format(self.video.get(cv2.CAP_PROP_CONTRAST)))
-        logging.info('CAP_PROP_SATURATION : {}'.format(self.video.get(cv2.CAP_PROP_SATURATION)))
-        logging.info('CAP_PROP_HUE : {}'.format(self.video.get(cv2.CAP_PROP_HUE)))
-        logging.info('CAP_PROP_GAIN  : {}'.format(self.video.get(cv2.CAP_PROP_GAIN)))
-        logging.info('CAP_PROP_CONVERT_RGB : {}'.format(self.video.get(cv2.CAP_PROP_CONVERT_RGB)))
+        logging.info('CV_CAP_PROP_FRAME_WIDTH: {}'.format(self.video_source.get(cv2.CAP_PROP_FRAME_WIDTH)))
+        logging.info('CV_CAP_PROP_FRAME_HEIGHT : {}'.format(self.video_source.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+        logging.info('CAP_PROP_FPS : {}'.format(self.video_source.get(cv2.CAP_PROP_FPS)))
+        logging.info('CAP_PROP_POS_MSEC : {}'.format(self.video_source.get(cv2.CAP_PROP_POS_MSEC)))
+        logging.info('CAP_PROP_FRAME_COUNT  : {}'.format(self.video_source.get(cv2.CAP_PROP_FRAME_COUNT)))
+        logging.info('CAP_PROP_BRIGHTNESS : {}'.format(self.video_source.get(cv2.CAP_PROP_BRIGHTNESS)))
+        logging.info('CAP_PROP_CONTRAST : {}'.format(self.video_source.get(cv2.CAP_PROP_CONTRAST)))
+        logging.info('CAP_PROP_SATURATION : {}'.format(self.video_source.get(cv2.CAP_PROP_SATURATION)))
+        logging.info('CAP_PROP_HUE : {}'.format(self.video_source.get(cv2.CAP_PROP_HUE)))
+        logging.info('CAP_PROP_GAIN  : {}'.format(self.video_source.get(cv2.CAP_PROP_GAIN)))
+        logging.info('CAP_PROP_CONVERT_RGB : {}'.format(self.video_source.get(cv2.CAP_PROP_CONVERT_RGB)))
     
         
 if __name__ == '__main__':

@@ -26,6 +26,7 @@ elif args.command == 'stop':
 else:
     raise Exception('Internal error!') 
 
+message.set_timestamp_now()
 with IMCSenderUDP(args.address, None) as socket:
    socket.send(message, args.port) 
    print('Message sent to {}:{} ...'.format(args.address, args.port))
