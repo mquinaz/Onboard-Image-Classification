@@ -58,6 +58,9 @@ class ImageClassificationActor(DynamicActor):
            except:
              pass
         self.video_source = None
+        # OpenCV window
+        if not self.parameters.headless:
+            cv2.destroyAllWindows()
 
     @Subscribe(pyimc.ImageClassificationControl)
     def on_Classification_Control(self, msg: pyimc.ImageClassificationControl):
@@ -164,8 +167,7 @@ class ImageClassificationActor(DynamicActor):
 
     def show_image(self, frame):
         if not self.parameters.headless:
-            gui_frame = frame # cv2.resize(frame, (self.parameters.window_size, self.parameters.window_size))
-            cv2.imshow('Onboard image classification', gui_frame)
+            cv2.imshow('Onboard image classification', frame)
 
     def log_message(self, message):
         message.src = self.imc_id
