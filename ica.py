@@ -140,7 +140,7 @@ class ImageClassificationActor(DynamicActor):
 
         # Save image to disk
         self.frame_counter += 1
-        img_name = '{}/f{:04d}.png'.format(self.data_dir, self.frame_counter)
+        img_name = '{}/f{:05d}.png'.format(self.data_dir, self.frame_counter)
         cv2.imwrite(img_name, frame)
         logging.info('{} written!'.format(img_name))
 

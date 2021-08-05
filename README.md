@@ -77,7 +77,7 @@ FFFF:FF -> FFFF:FF
 2021-08-05 09:15:43 - INFO - now active
 2021-08-05 09:15:43 - INFO - Classification time: 0.099 s
 2021-08-05 09:15:43 - INFO - [('A4', 0.4823529411764706), ('A3', 0.4196078431372549), ('A5', 0.10196078431372549)]
-2021-08-05 09:15:43 - INFO - /home/edrdo/Onboard-Image-Classification/data/autoML/20210805/091541/f0001.png written!
+2021-08-05 09:15:43 - INFO - /home/edrdo/Onboard-Image-Classification/data/autoML/20210805/091541/f00001.png written!
 2021-08-05 09:15:43 - INFO - ImageClassification
 FFFF:FF -> FFFF:FF
     frameid: 1
