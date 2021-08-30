@@ -41,8 +41,10 @@ class ImageClassificationActor(DynamicActor):
         self.setup = None
         # Counter for classified frames
         self.frame_counter = 0
-        # Timestamp for last classification
-        self.last_run = 0
+        # Time for next classification (only set when classification is active)
+        self.next_classif_time = 0
+        # Time for next frame capture (only set when classification is active)
+        self.next_capture_time = 0
         # Model 
         self.classifier = None
         # Data dir
@@ -75,6 +77,7 @@ class ImageClassificationActor(DynamicActor):
               if not self.video_source.isOpened():
                  raise Exception('Error setting up video source')
               self.dump_vc_props()
+              self.fps = float(self.video_source.get(cv2.CAP_PROP_FPS))
               self.mode = self.MODE_CONFIGURED
               self.data_dir = '{}/{}/{}'.format(parameters.data_path, 
                                                 self.setup.model,
@@ -90,6 +93,8 @@ class ImageClassificationActor(DynamicActor):
         elif msg.command == pyimc.ImageClassificationControl.CommandEnum.START:
             if self.mode == self.MODE_CONFIGURED:
                 self.mode = self.MODE_ACTIVE
+                self.next_capture_time = time.time()
+                self.next_classif_time = self.next_capture_time
                 logging.info('now active')
             elif self.mode == self.MODE_NOT_CONFIGURED:
                 logging.error('cannot start, not configured!')
@@ -111,6 +116,15 @@ class ImageClassificationActor(DynamicActor):
         if self.mode != self.MODE_ACTIVE:
             return
 
+        # Get current time
+        current_time = time.time()
+
+        # Account for FPS
+        if  current_time < self.next_capture_time:
+            return
+
+        self.next_capture_time += 1.0 / self.fps
+
         # Capture frame
         ret, frame = self.video_source.read()
         if not ret:
@@ -118,10 +132,13 @@ class ImageClassificationActor(DynamicActor):
             self.reset()
             return
 
+        # logging.info('frame captured')
+
         # Account for sampling frequency
-        current_time = time.time()
-        if  current_time - self.last_run < 1 / self.setup.sampling_freq:
+        if  current_time < self.next_classif_time: 
             return
+
+        self.next_classif_time += 1 / self.setup.sampling_freq
 
         # Convert to RGB for proper handling by TFLite
         # cv2.imshow('test', frame)
@@ -133,7 +150,6 @@ class ImageClassificationActor(DynamicActor):
         except:
             traceback.print_exc()
             return
-        self.last_run = current_time
         classification_time = time.time() - current_time
         logging.info('Classification time: %.3f s' % classification_time)
         logging.info(results)
