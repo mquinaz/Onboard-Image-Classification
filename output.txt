@@ -1,0 +1,988 @@
+2021-09-24 12:12:43.143770: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+2021-09-24 12:12:45 - INFO - starting
+2021-09-24 12:12:45 - INFO - resetting internal state
+2021-09-24 12:12:45 - INFO - posix.times_result(user=3.22, system=1.24, children_user=0.0, children_system=0.01, elapsed=17183757.15)
+2021-09-24 12:12:45 - INFO - svmem(total=8020959232, available=1697300480, percent=78.8, used=5350645760, free=443191296, active=1509105664, inactive=5522808832, buffers=55025664, cached=2172096512, shared=678141952, slab=244817920)
+2021-09-24 12:12:47 - INFO - Received control message -- ImageClassificationControl
+FFFF:FF -> FFFF:FF
+2021/09/24 11:12:47
+    command: 2
+    model: autoML_slow
+    video_source: example.mjpg
+    sampling_freq: 10
+2021-09-24 12:12:47 - INFO - resetting internal state
+2021-09-24 12:12:47 - INFO - posix.times_result(user=3.44, system=1.25, children_user=0.0, children_system=0.01, elapsed=17183758.99)
+2021-09-24 12:12:47 - INFO - svmem(total=8020959232, available=1683140608, percent=79.0, used=5364740096, free=429015040, active=1509122048, inactive=5537058816, buffers=55025664, cached=2172178432, shared=678223872, slab=244817920)
+2021-09-24 12:12:47 - INFO - setting up
+2021-09-24 12:12:47 - INFO - Loading labels from /home/miguel/Downloads/Onboard-Image-Classification/models/autoML_slow/dict.txt
+2021-09-24 12:12:47 - INFO - Loading model from /home/miguel/Downloads/Onboard-Image-Classification/models/autoML_slow/model.tflite
+2021-09-24 12:12:47 - INFO - CV_CAP_PROP_FRAME_WIDTH: 1376.0
+2021-09-24 12:12:47 - INFO - CV_CAP_PROP_FRAME_HEIGHT : 1032.0
+2021-09-24 12:12:47 - INFO - CAP_PROP_FPS : 7.0
+2021-09-24 12:12:47 - INFO - CAP_PROP_POS_MSEC : 0.0
+2021-09-24 12:12:47 - INFO - CAP_PROP_FRAME_COUNT  : 1938.0
+2021-09-24 12:12:47 - INFO - CAP_PROP_BRIGHTNESS : 0.0
+2021-09-24 12:12:47 - INFO - CAP_PROP_CONTRAST : 0.0
+2021-09-24 12:12:47 - INFO - CAP_PROP_SATURATION : 0.0
+2021-09-24 12:12:47 - INFO - CAP_PROP_HUE : 0.0
+2021-09-24 12:12:47 - INFO - CAP_PROP_GAIN  : 0.0
+2021-09-24 12:12:47 - INFO - CAP_PROP_CONVERT_RGB : 0.0
+2021-09-24 12:12:47 - INFO - setup complete - data dir: /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247
+2021-09-24 12:12:47 - INFO - Received control message -- ImageClassificationControl
+FFFF:FF -> FFFF:FF
+2021/09/24 11:12:47
+    command: 0
+    model: 
+    video_source: 
+    sampling_freq: 0
+2021-09-24 12:12:47 - INFO - now active
+2021-09-24 12:12:47 - INFO - Classification time: 0.156 s
+2021-09-24 12:12:47 - INFO - [('A3', 0.5098039215686274), ('A4', 0.3764705882352941), ('A5', 0.12156862745098039)]
+2021-09-24 12:12:48 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00001.png written!
+2021-09-24 12:12:48 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 1
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 51
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 38
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 12
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:48 - INFO - Classification time: 0.136 s
+2021-09-24 12:12:48 - INFO - [('A3', 0.49411764705882355), ('A4', 0.3803921568627451), ('A5', 0.12941176470588237)]
+2021-09-24 12:12:48 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00002.png written!
+2021-09-24 12:12:48 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 2
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 49
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 38
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 13
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:48 - INFO - Classification time: 0.140 s
+2021-09-24 12:12:48 - INFO - [('A3', 0.5176470588235295), ('A4', 0.36470588235294116), ('A5', 0.12156862745098039)]
+2021-09-24 12:12:48 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00003.png written!
+2021-09-24 12:12:48 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 3
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 52
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 36
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 12
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:48 - INFO - Classification time: 0.154 s
+2021-09-24 12:12:48 - INFO - [('A3', 0.5254901960784314), ('A4', 0.3686274509803922), ('A5', 0.10980392156862745)]
+2021-09-24 12:12:48 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00004.png written!
+2021-09-24 12:12:48 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 4
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 53
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 37
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 11
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:48 - INFO - Classification time: 0.141 s
+2021-09-24 12:12:48 - INFO - [('A3', 0.5215686274509804), ('A4', 0.36470588235294116), ('A5', 0.11764705882352941)]
+2021-09-24 12:12:48 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00005.png written!
+2021-09-24 12:12:48 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 5
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 52
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 36
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 12
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:49 - INFO - Classification time: 0.142 s
+2021-09-24 12:12:49 - INFO - [('A3', 0.5294117647058824), ('A4', 0.3568627450980392), ('A5', 0.11764705882352941)]
+2021-09-24 12:12:49 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00006.png written!
+2021-09-24 12:12:49 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 6
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 53
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 36
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 12
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:49 - INFO - Classification time: 0.130 s
+2021-09-24 12:12:49 - INFO - [('A3', 0.592156862745098), ('A4', 0.30980392156862746), ('A5', 0.10196078431372549)]
+2021-09-24 12:12:49 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00007.png written!
+2021-09-24 12:12:49 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 7
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 59
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 31
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 10
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:49 - INFO - Classification time: 0.133 s
+2021-09-24 12:12:49 - INFO - [('A3', 0.5764705882352941), ('A4', 0.3215686274509804), ('A5', 0.10588235294117647)]
+2021-09-24 12:12:49 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00008.png written!
+2021-09-24 12:12:49 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 8
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 58
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 32
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 11
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:49 - INFO - Classification time: 0.139 s
+2021-09-24 12:12:49 - INFO - [('A3', 0.5333333333333333), ('A4', 0.3568627450980392), ('A5', 0.11372549019607843)]
+2021-09-24 12:12:49 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00009.png written!
+2021-09-24 12:12:49 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 9
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 53
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 36
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 11
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:49 - INFO - Classification time: 0.137 s
+2021-09-24 12:12:49 - INFO - [('A3', 0.5372549019607843), ('A4', 0.3607843137254902), ('A5', 0.10980392156862745)]
+2021-09-24 12:12:50 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00010.png written!
+2021-09-24 12:12:50 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 10
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 54
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 36
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 11
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:50 - INFO - Classification time: 0.138 s
+2021-09-24 12:12:50 - INFO - [('A3', 0.592156862745098), ('A4', 0.30980392156862746), ('A5', 0.10196078431372549)]
+2021-09-24 12:12:50 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00011.png written!
+2021-09-24 12:12:50 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 11
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 59
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 31
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 10
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:50 - INFO - Classification time: 0.161 s
+2021-09-24 12:12:50 - INFO - [('A3', 0.5568627450980392), ('A4', 0.3411764705882353), ('A5', 0.10588235294117647)]
+2021-09-24 12:12:50 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00012.png written!
+2021-09-24 12:12:50 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 12
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 56
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 34
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 11
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:50 - INFO - Classification time: 0.147 s
+2021-09-24 12:12:50 - INFO - [('A3', 0.5372549019607843), ('A4', 0.3607843137254902), ('A5', 0.10588235294117647)]
+2021-09-24 12:12:50 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00013.png written!
+2021-09-24 12:12:50 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 13
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 54
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 36
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 11
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:50 - INFO - Classification time: 0.143 s
+2021-09-24 12:12:50 - INFO - [('A3', 0.5254901960784314), ('A4', 0.3686274509803922), ('A5', 0.10980392156862745)]
+2021-09-24 12:12:51 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00014.png written!
+2021-09-24 12:12:51 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 14
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 53
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 37
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 11
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:51 - INFO - Classification time: 0.139 s
+2021-09-24 12:12:51 - INFO - [('A3', 0.5372549019607843), ('A4', 0.3607843137254902), ('A5', 0.10588235294117647)]
+2021-09-24 12:12:51 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00015.png written!
+2021-09-24 12:12:51 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 15
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 54
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 36
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 11
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:51 - INFO - Classification time: 0.136 s
+2021-09-24 12:12:51 - INFO - [('A3', 0.5490196078431373), ('A4', 0.34901960784313724), ('A5', 0.10980392156862745)]
+2021-09-24 12:12:51 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00016.png written!
+2021-09-24 12:12:51 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 16
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 55
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 35
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 11
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:51 - INFO - Classification time: 0.143 s
+2021-09-24 12:12:51 - INFO - [('A3', 0.5490196078431373), ('A4', 0.34901960784313724), ('A5', 0.10196078431372549)]
+2021-09-24 12:12:51 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00017.png written!
+2021-09-24 12:12:51 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 17
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 55
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 35
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 10
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:51 - INFO - Classification time: 0.138 s
+2021-09-24 12:12:51 - INFO - [('A3', 0.5137254901960784), ('A4', 0.37254901960784315), ('A5', 0.11764705882352941)]
+2021-09-24 12:12:51 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00018.png written!
+2021-09-24 12:12:51 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 18
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 51
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 37
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 12
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:52 - INFO - Classification time: 0.139 s
+2021-09-24 12:12:52 - INFO - [('A3', 0.5607843137254902), ('A4', 0.3333333333333333), ('A5', 0.10980392156862745)]
+2021-09-24 12:12:52 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00019.png written!
+2021-09-24 12:12:52 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 19
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 56
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 33
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 11
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:52 - INFO - Classification time: 0.148 s
+2021-09-24 12:12:52 - INFO - [('A3', 0.5372549019607843), ('A4', 0.34509803921568627), ('A5', 0.12156862745098039)]
+2021-09-24 12:12:52 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00020.png written!
+2021-09-24 12:12:52 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 20
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 54
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 35
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 12
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:52 - INFO - Classification time: 0.136 s
+2021-09-24 12:12:52 - INFO - [('A3', 0.5098039215686274), ('A4', 0.3764705882352941), ('A5', 0.11764705882352941)]
+2021-09-24 12:12:52 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00021.png written!
+2021-09-24 12:12:52 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 21
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 51
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 38
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 12
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:52 - INFO - Classification time: 0.141 s
+2021-09-24 12:12:52 - INFO - [('A3', 0.45098039215686275), ('A4', 0.44313725490196076), ('A5', 0.10980392156862745)]
+2021-09-24 12:12:52 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00022.png written!
+2021-09-24 12:12:52 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 22
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 45
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 44
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 11
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:52 - INFO - Classification time: 0.144 s
+2021-09-24 12:12:52 - INFO - [('A3', 0.5019607843137255), ('A4', 0.39215686274509803), ('A5', 0.10980392156862745)]
+2021-09-24 12:12:53 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00023.png written!
+2021-09-24 12:12:53 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 23
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 50
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 39
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 11
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:53 - INFO - Classification time: 0.129 s
+2021-09-24 12:12:53 - INFO - [('A3', 0.5254901960784314), ('A4', 0.37254901960784315), ('A5', 0.10588235294117647)]
+2021-09-24 12:12:53 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00024.png written!
+2021-09-24 12:12:53 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 24
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 53
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 37
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 11
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:53 - INFO - Classification time: 0.143 s
+2021-09-24 12:12:53 - INFO - [('A3', 0.4980392156862745), ('A4', 0.403921568627451), ('A5', 0.10588235294117647)]
+2021-09-24 12:12:53 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00025.png written!
+2021-09-24 12:12:53 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 25
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 50
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 40
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 11
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:53 - INFO - Classification time: 0.143 s
+2021-09-24 12:12:53 - INFO - [('A4', 0.48627450980392156), ('A3', 0.4), ('A5', 0.11764705882352941)]
+2021-09-24 12:12:53 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00026.png written!
+2021-09-24 12:12:53 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 26
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 49
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 40
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 12
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:53 - INFO - Classification time: 0.146 s
+2021-09-24 12:12:53 - INFO - [('A4', 0.5019607843137255), ('A3', 0.39215686274509803), ('A5', 0.10980392156862745)]
+2021-09-24 12:12:53 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00027.png written!
+2021-09-24 12:12:53 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 27
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 50
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 39
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 11
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:54 - INFO - Classification time: 0.132 s
+2021-09-24 12:12:54 - INFO - [('A4', 0.5254901960784314), ('A3', 0.37254901960784315), ('A5', 0.10588235294117647)]
+2021-09-24 12:12:54 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00028.png written!
+2021-09-24 12:12:54 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 28
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 53
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 37
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 11
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:54 - INFO - Classification time: 0.132 s
+2021-09-24 12:12:54 - INFO - [('A4', 0.615686274509804), ('A3', 0.2901960784313726), ('A5', 0.09803921568627451)]
+2021-09-24 12:12:54 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00029.png written!
+2021-09-24 12:12:54 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 29
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 62
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 29
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 10
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:54 - INFO - Classification time: 0.138 s
+2021-09-24 12:12:54 - INFO - [('A4', 0.6313725490196078), ('A3', 0.2823529411764706), ('A5', 0.09019607843137255)]
+2021-09-24 12:12:54 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00030.png written!
+2021-09-24 12:12:54 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 30
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 63
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 28
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 9
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:54 - INFO - Classification time: 0.141 s
+2021-09-24 12:12:54 - INFO - [('A4', 0.6431372549019608), ('A3', 0.2784313725490196), ('A5', 0.08235294117647059)]
+2021-09-24 12:12:54 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00031.png written!
+2021-09-24 12:12:54 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 31
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 64
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 28
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 8
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:54 - INFO - Classification time: 0.135 s
+2021-09-24 12:12:54 - INFO - [('A4', 0.6862745098039216), ('A3', 0.23529411764705882), ('A5', 0.08235294117647059)]
+2021-09-24 12:12:55 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00032.png written!
+2021-09-24 12:12:55 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 32
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 69
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 24
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 8
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:55 - INFO - Classification time: 0.133 s
+2021-09-24 12:12:55 - INFO - [('A4', 0.6235294117647059), ('A3', 0.2901960784313726), ('A5', 0.09019607843137255)]
+2021-09-24 12:12:55 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00033.png written!
+2021-09-24 12:12:55 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 33
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 62
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 29
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 9
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:55 - INFO - Classification time: 0.138 s
+2021-09-24 12:12:55 - INFO - [('A4', 0.49411764705882355), ('A3', 0.40784313725490196), ('A5', 0.10196078431372549)]
+2021-09-24 12:12:55 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00034.png written!
+2021-09-24 12:12:55 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 34
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 49
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 41
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 10
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:55 - INFO - Classification time: 0.144 s
+2021-09-24 12:12:55 - INFO - [('A4', 0.47843137254901963), ('A3', 0.45098039215686275), ('A5', 0.07450980392156863)]
+2021-09-24 12:12:55 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00035.png written!
+2021-09-24 12:12:55 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 35
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 48
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 45
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 7
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:55 - INFO - Classification time: 0.141 s
+2021-09-24 12:12:55 - INFO - [('A3', 0.4588235294117647), ('A4', 0.45098039215686275), ('A5', 0.09803921568627451)]
+2021-09-24 12:12:55 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00036.png written!
+2021-09-24 12:12:55 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 36
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 46
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 45
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 10
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:56 - INFO - Classification time: 0.132 s
+2021-09-24 12:12:56 - INFO - [('A3', 0.4823529411764706), ('A4', 0.4235294117647059), ('A5', 0.09803921568627451)]
+2021-09-24 12:12:56 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00037.png written!
+2021-09-24 12:12:56 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 37
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 48
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 42
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 10
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:56 - INFO - Classification time: 0.136 s
+2021-09-24 12:12:56 - INFO - [('A3', 0.5843137254901961), ('A4', 0.3058823529411765), ('A5', 0.10980392156862745)]
+2021-09-24 12:12:56 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00038.png written!
+2021-09-24 12:12:56 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 38
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 58
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 31
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 11
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:56 - INFO - Classification time: 0.157 s
+2021-09-24 12:12:56 - INFO - [('A3', 0.5843137254901961), ('A4', 0.3137254901960784), ('A5', 0.10588235294117647)]
+2021-09-24 12:12:56 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00039.png written!
+2021-09-24 12:12:56 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 39
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 58
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 31
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 11
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:56 - INFO - Classification time: 0.133 s
+2021-09-24 12:12:56 - INFO - [('A3', 0.6274509803921569), ('A4', 0.2784313725490196), ('A5', 0.09803921568627451)]
+2021-09-24 12:12:56 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00040.png written!
+2021-09-24 12:12:56 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 40
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 63
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 28
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 10
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:57 - INFO - Classification time: 0.142 s
+2021-09-24 12:12:57 - INFO - [('A3', 0.5764705882352941), ('A4', 0.3333333333333333), ('A5', 0.09411764705882353)]
+2021-09-24 12:12:57 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00041.png written!
+2021-09-24 12:12:57 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 41
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 58
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 33
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 9
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:57 - INFO - Classification time: 0.135 s
+2021-09-24 12:12:57 - INFO - [('A3', 0.6980392156862745), ('A4', 0.23137254901960785), ('A5', 0.07450980392156863)]
+2021-09-24 12:12:57 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00042.png written!
+2021-09-24 12:12:57 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 42
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 70
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 23
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 7
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:57 - INFO - Classification time: 0.146 s
+2021-09-24 12:12:57 - INFO - [('A3', 0.8352941176470589), ('A4', 0.11764705882352941), ('A5', 0.054901960784313725)]
+2021-09-24 12:12:57 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00043.png written!
+2021-09-24 12:12:57 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 43
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 84
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 12
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 5
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:57 - INFO - Classification time: 0.140 s
+2021-09-24 12:12:57 - INFO - [('A3', 0.807843137254902), ('A4', 0.13333333333333333), ('A5', 0.06274509803921569)]
+2021-09-24 12:12:57 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00044.png written!
+2021-09-24 12:12:57 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 44
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 81
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 13
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 6
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:57 - INFO - Classification time: 0.144 s
+2021-09-24 12:12:57 - INFO - [('A3', 0.8117647058823529), ('A4', 0.12941176470588237), ('A5', 0.06274509803921569)]
+2021-09-24 12:12:58 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00045.png written!
+2021-09-24 12:12:58 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 45
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 81
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 13
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 6
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:58 - INFO - Classification time: 0.143 s
+2021-09-24 12:12:58 - INFO - [('A3', 0.8666666666666667), ('A4', 0.08235294117647059), ('A5', 0.054901960784313725)]
+2021-09-24 12:12:58 - INFO - /home/miguel/Downloads/Onboard-Image-Classification/data/autoML_slow/20210924/121247/f00046.png written!
+2021-09-24 12:12:58 - INFO - ImageClassification
+FFFF:FF -> FFFF:FF
+    frameid: 46
+    classifications: [{
+      abbrev: ScoredClassification
+      score: 87
+      classification: A3
+    }{
+      abbrev: ScoredClassification
+      score: 8
+      classification: A4
+    }{
+      abbrev: ScoredClassification
+      score: 5
+      classification: A5
+    }]
+    data: 
+2021-09-24 12:12:58 - INFO - Received control message -- ImageClassificationControl
+FFFF:FF -> FFFF:FF
+2021/09/24 11:12:58
+    command: 1
+    model: 
+    video_source: 
+    sampling_freq: 0
+2021-09-24 12:12:58 - INFO - now inactive
+2021-09-24 12:12:58 - INFO - Received control message -- ImageClassificationControl
+FFFF:FF -> FFFF:FF
+2021/09/24 11:12:58
+    command: 2
+    model: autoML
+    video_source: example.mjpg
+    sampling_freq: 1
+2021-09-24 12:12:58 - INFO - resetting internal state
+2021-09-24 12:12:58 - INFO - posix.times_result(user=13.93, system=3.07, children_user=0.0, children_system=0.01, elapsed=17183769.69)
+2021-09-24 12:12:58 - INFO - svmem(total=8020959232, available=1665961984, percent=79.2, used=5378899968, free=356802560, active=1509359616, inactive=5608431616, buffers=55140352, cached=2230116352, shared=680648704, slab=245940224)
+2021-09-24 12:12:58 - INFO - setting up
+2021-09-24 12:12:58 - INFO - Loading labels from /home/miguel/Downloads/Onboard-Image-Classification/models/autoML/dict.txt
+2021-09-24 12:12:58 - ERROR - Error during setup
+Traceback (most recent call last):
+  File "./ica.py", line 78, in on_Classification_Control
+    self.classifier = tfmodel.Classifier(self.parameters.model_path, self.setup.model)
+  File "/home/miguel/Downloads/Onboard-Image-Classification/tfmodel.py", line 16, in __init__
+    with open(dict_file_path, 'r') as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/home/miguel/Downloads/Onboard-Image-Classification/models/autoML/dict.txt'
+2021-09-24 12:12:58 - INFO - resetting internal state
+2021-09-24 12:12:58 - INFO - posix.times_result(user=13.93, system=3.07, children_user=0.0, children_system=0.01, elapsed=17183769.69)
+2021-09-24 12:12:58 - INFO - svmem(total=8020959232, available=1674629120, percent=79.1, used=5370232832, free=365469696, active=1509359616, inactive=5600026624, buffers=55140352, cached=2230116352, shared=680648704, slab=245940224)

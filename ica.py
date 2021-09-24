@@ -7,6 +7,7 @@ import datetime
 import logging
 import os
 import sys
+import psutil
 import pyimc
 import tfmodel
 import time
@@ -35,6 +36,8 @@ class ImageClassificationActor(DynamicActor):
 
     def reset(self):
         logging.info('resetting internal state')
+        logging.info(os.times())
+        logging.info(psutil.virtual_memory())
         # Mode flag
         self.mode = self.MODE_NOT_CONFIGURED
         # ImageClasssificationControl message containing setup
