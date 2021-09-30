@@ -98,6 +98,7 @@ class ImageClassificationActor(DynamicActor):
                 self.mode = self.MODE_ACTIVE
                 self.next_capture_time = time.time()
                 self.next_classif_time = self.next_capture_time
+                self.ot_a = os.times()
                 logging.info('now active')
             elif self.mode == self.MODE_NOT_CONFIGURED:
                 logging.error('cannot start, not configured!')
@@ -105,6 +106,10 @@ class ImageClassificationActor(DynamicActor):
                 logging.error('already active')
         elif msg.command == pyimc.ImageClassificationControl.CommandEnum.STOP:    
             if self.mode == self.MODE_ACTIVE:    
+                self.ot_b = os.times()
+                cpu_usage = 100 * (self.ot_b.user + self.ot_b.system - self.ot_a.user - self.ot_a.system) / (self.ot_b.elapsed - self.ot_a.elapsed)
+                ram_usage = psutil.virtual_memory().used * 1e+9
+                logging.info('CPU usage: {}i % -- RAM: {} GB'.format(cpu_usage,ram_usage))
                 self.mode = self.MODE_CONFIGURED  
                 logging.info('now inactive')  
                 # cv2.destroyAllWindows()       
